@@ -7,6 +7,7 @@ import requests
 import sys
 import argparse
 from time import sleep, time
+from datetime import datetime
 import urllib.parse
 
 def get_icy_metadata(url, timeout=10):
@@ -102,7 +103,8 @@ def main():
             try:
                 metadata = get_icy_metadata(args.url, args.timeout)
                 if metadata and metadata != last_metadata:
-                    print(f"Metadata: {metadata}")
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    print(f"{timestamp}: {metadata}")
                     last_metadata = metadata
                 sleep(1)  # Avoid overwhelming the server
             except KeyboardInterrupt:
@@ -111,7 +113,8 @@ def main():
     else:
         metadata = get_icy_metadata(args.url, args.timeout)
         if metadata:
-            print(f"Metadata: {metadata}")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"{timestamp}: {metadata}")
         else:
             print("No metadata retrieved")
             sys.exit(1)
