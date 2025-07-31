@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Luc Van Braekel
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
 import requests
 import time
 import re
