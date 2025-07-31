@@ -53,7 +53,7 @@ Note: Some Icecast streams (e.g., Ogg Vorbis) may use alternative metadata forma
 
 ## Usage
 
-Run the script with a stream URL to extract ICY metadata (e.g., song titles) from an Icecast or SHOUTcast stream. The script outputs metadata to standard output (stdout) and supports both single-run and continuous polling modes, with an option to limit the duration of continuous mode.
+Run the script with a stream URL to extract ICY metadata (e.g., song titles) from an Icecast or SHOUTcast stream. The script outputs metadata to standard output (stdout) with timestamps in the format `YYYY-MM-DD HH:MM:SS`. It supports both single-run and continuous polling modes, with an option to limit the duration of continuous mode.
 
 ### Command-Line Syntax
 
@@ -77,45 +77,46 @@ icy_meta.py [-h] [--timeout TIMEOUT] [--continuous] [--duration DURATION] url
    ```
    Output (to stdout):
    ```
-   Metadata: Artist - Song Title
+   2025-07-31 07:56:45: Artist - Song Title
    ```
+   
    If no metadata is retrieved:
    ```
    No metadata retrieved
    ```
 
-2. **Continuous mode** (poll for metadata changes until interrupted):
+3. **Continuous mode** (poll for metadata changes until interrupted):
    ```bash
    python3 icy_meta.py http://example.com:8000/stream --continuous
    ```
    Output (to stdout, only when metadata changes):
    ```
-   Metadata: Artist - Song Title
-   Metadata: Artist - New Song Title
+   2025-07-31 07:56:45: Artist - Song Title
+   2025-07-31 07:58:15: Artist - New Song Title
    ```
    Stop with `Ctrl+C`:
    ```
    Stopped by user
    ```
 
-3. **Continuous mode with duration** (poll for 3600 seconds):
+4. **Continuous mode with duration** (poll for 3600 seconds):
    ```bash
    python3 icy_meta.py http://example.com:8000/stream --continuous --duration 3600
    ```
    Output (to stdout, only when metadata changes, stops after 3600 seconds):
    ```
-   Metadata: Artist - Song Title
-   Metadata: Artist - New Song Title
+   2025-07-31 07:56:45: Artist - Song Title
+   2025-07-31 07:59:15: Artist - New Song Title
    Stopped: Reached duration limit of 3600 seconds
    ```
 
-4. **Specify a custom timeout**:
+5. **Specify a custom timeout**:
    ```bash
    python3 icy_meta.py http://example.com:8000/stream --timeout 15
    ```
    Output (same as single-run mode).
 
-5. **Redirect output to a file**:
+6. **Redirect output to a file**:
    ```bash
    python3 icy_meta.py http://example.com:8000/stream --continuous --duration 3600 > metadata.txt
    ```
