@@ -56,7 +56,7 @@ Run the script from the command line, providing three arguments:
 
 Example:
 
-python icy_metadata_extractor.py http://example.com:8000/stream metadata.txt 3600
+python icy_meta.py http://example.com:8000/stream metadata.txt 3600
 
 
 This will:
