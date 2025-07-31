@@ -1,10 +1,14 @@
 # ICY Metadata Extractor for Shoutcast/Icecast Streams
 
+A Python script to extract ICY metadata (e.g., song titles) from Icecast or SHOUTcast streaming audio sources.
+
 ## Overview
 
-What if you don't want to listen to the radio but only want a list of songs played? This Python script extracts ICY metadata from Shoutcast or Icecast streams and saves it to a text file, allowing you to track song titles, artists, or radio program names without needing to stream the audio. It's perfect for monitoring playlists, logging music, or analyzing radio programming.
+This Python script extracts ICY metadata from Shoutcast or Icecast streams. It outputs the metadata to standard output (stdout) and includes robust error handling for network issues, malformed metadata, or stream termination. 
 
-The script connects to a streaming audio source, reads metadata embedded in the stream, and logs it with timestamps to a specified output file. It supports all audio codecs used by Shoutcast and Icecast servers, including MP3, AAC, and others, as long as the stream provides ICY metadata.
+The script can run in a single mode to fetch metadata once, or in continuous mode to poll for metadata changes. 
+
+Using this script allows you to track song titles, artists, or radio program names without needing to stream the audio. It's perfect for monitoring playlists, logging music, or analyzing radio programming.
 
 ## Features
 
@@ -49,30 +53,90 @@ Note: Some Icecast streams (e.g., Ogg Vorbis) may use alternative metadata forma
 
 ## Usage
 
-Run the script from the command line, providing three arguments:
-- stream_url: The URL of the Shoutcast/Icecast stream (e.g., http://example.com:8000/stream or http://example.com:8000/stream.aac).
-- output_file: The path to the text file where metadata will be saved (e.g., metadata.txt).
-- duration: The duration (in seconds) to run the extraction (e.g., 60 for 1 minute).
+Run the script with a stream URL to extract ICY metadata (e.g., song titles) from an Icecast or SHOUTcast stream. The script outputs metadata to standard output (stdout) and supports both single-run and continuous polling modes, with an option to limit the duration of continuous mode.
+
+### Command-Line Syntax
+
+```
+icy_meta.py [-h] [--timeout TIMEOUT] [--continuous] [--duration DURATION] url
+```
+
+### Arguments
+
+- `url`: The URL of the Icecast or SHOUTcast stream (required). Example: `http://example.com:8000/stream`.
+- `--timeout TIMEOUT`: Timeout for the initial connection in seconds (optional, default: 10).
+- `--continuous`: Enable continuous mode to poll for metadata changes every second (optional).
+- `--duration DURATION`: Duration in seconds for continuous mode (optional, default: run until interrupted).
+- `-h, --help`: Show help message and exit.
+
+### Examples
+
+1. **Single-run mode** (fetch metadata once):
+   ```bash
+   python3 icy_meta.py http://example.com:8000/stream
+   ```
+   Output (to stdout):
+   ```
+   Metadata: Artist - Song Title
+   ```
+   If no metadata is retrieved:
+   ```
+   No metadata retrieved
+   ```
+
+2. **Continuous mode** (poll for metadata changes until interrupted):
+   ```bash
+   python3 icy_meta.py http://example.com:8000/stream --continuous
+   ```
+   Output (to stdout, only when metadata changes):
+   ```
+   Metadata: Artist - Song Title
+   Metadata: Artist - New Song Title
+   ```
+   Stop with `Ctrl+C`:
+   ```
+   Stopped by user
+   ```
+
+3. **Continuous mode with duration** (poll for 3600 seconds):
+   ```bash
+   python3 icy_meta.py http://example.com:8000/stream --continuous --duration 3600
+   ```
+   Output (to stdout, only when metadata changes, stops after 3600 seconds):
+   ```
+   Metadata: Artist - Song Title
+   Metadata: Artist - New Song Title
+   Stopped: Reached duration limit of 3600 seconds
+   ```
+
+4. **Specify a custom timeout**:
+   ```bash
+   python3 icy_meta.py http://example.com:8000/stream --timeout 15
+   ```
+   Output (same as single-run mode).
+
+5. **Redirect output to a file**:
+   ```bash
+   python3 icy_meta.py http://example.com:8000/stream --continuous --duration 3600 > metadata.txt
+   ```
+
+### Error and Warning Messages
+
+The script outputs errors or warnings to stdout for issues such as:
+- Invalid or missing `icy-metaint` header.
+- Empty stream chunks or stream termination.
+- Malformed metadata (e.g., no `StreamTitle`).
+- Network errors (e.g., connection timeout).
 
 Example:
+```
+Error: No icy-metaint header found in response
+Warning: Malformed metadata: StreamTitle='Invalid'
+```
 
-python icy_meta.py http://example.com:8000/stream metadata.txt 3600
-
-
-This will:
-
-- Connect to the stream at http://example.com:8000/stream.
-- Extract metadata for 60 seconds.
-- Save the results to metadata.txt.
-
-Example Output File (metadata.txt)
-
-Metadata extraction started at 2025-07-31 07:05:00
-Stream URL: http://example.com:8000/stream
-
-[2025-07-31 07:05:01] {'StreamTitle': 'Artist - Song Title', 'StreamUrl': ''}
-[2025-07-31 07:05:15] {'StreamTitle': 'Morning Talk Show', 'StreamUrl': ''}
-
+### Notes
+- The `--duration` argument only affects continuous mode (`--continuous`). If used without `--continuous`, it has no effect, as single-run mode exits after one metadata fetch.
+- 
 
 ## Finding Streams
 
