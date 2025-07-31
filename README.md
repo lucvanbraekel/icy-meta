@@ -135,8 +135,7 @@ Warning: Malformed metadata: StreamTitle='Invalid'
 ```
 
 ### Notes
-- The `--duration` argument only affects continuous mode (`--continuous`). If used without `--continuous`, it has no effect, as single-run mode exits after one metadata fetch.
-- 
+- The `--duration` argument only affects continuous mode (`--continuous`). If used without `--continuous`, it has no effect, as single-run mode exits after one metadata fetch. 
 
 ## Finding Streams
 
@@ -149,7 +148,6 @@ Ensure the stream supports ICY metadata by checking for the icy-metaint header i
 
 ## Notes
 
-- The script appends to the output file if it already exists.
 - If a stream doesn't support ICY metadata, the script will log an error to the output file and exit.
 - For non-ICY metadata formats (e.g., Ogg Vorbis comments), the script would need modification.
 - The script uses the requests library for HTTP streaming, which is reliable for most streams but may require adjustments for specific edge cases.
