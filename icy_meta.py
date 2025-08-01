@@ -104,7 +104,7 @@ def main():
                 metadata = get_icy_metadata(args.url, args.timeout)
                 if metadata and metadata != last_metadata:
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    print(f"{timestamp}: {metadata}")
+                    print(f"{timestamp}: {metadata}", flush=True)
                     last_metadata = metadata
                 sleep(1)  # Avoid overwhelming the server
             except KeyboardInterrupt:
@@ -114,7 +114,7 @@ def main():
         metadata = get_icy_metadata(args.url, args.timeout)
         if metadata:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"{timestamp}: {metadata}")
+            print(f"{timestamp}: {metadata}", flush=True)
         else:
             print("No metadata retrieved")
             sys.exit(1)
